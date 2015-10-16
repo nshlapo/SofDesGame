@@ -1,6 +1,38 @@
 import pygame
 from pygame.locals import *
 
+class GameModel:
+    def __init__(self):
+        self.floor = 0
+        self.mapUnits = []
+
+
+
+
+class Player:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.trap = False
+        self.key = False
+
+
+class Enemy:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.visible = False
+
+class MapUnit:
+    def __init__(self, x, y, walls, key, trap, stair):
+        self.x = x
+        self.y = y
+        self.walls = walls
+        self.key = key
+        self.trap = trap
+        self.stair = stair
+        self.visible = False
+
 # class BrickBreakerModel:
 #     """ Encodes the game state """
 #     def __init__(self):
@@ -9,30 +41,3 @@ from pygame.locals import *
 #             brick = Brick((0,255,0),20,100,x,120)
 #             self.bricks.append(brick)
 #         self.paddle = Paddle((255,255,255),20,100,200,450)
-
-# class Brick:
-#     """ Encodes the state of a brick in the game """
-#     def __init__(self,color,height,width,x,y):
-#         self.color = color
-#         self.height = height
-#         self.width = width
-#         self.x = x
-#         self.y = y
-
-# class Paddle:
-#     """ Encodes the state of the paddle in the game """
-#     def __init__(self,color,height,width,x,y):
-#         self.color = color
-#         self.height = height
-#         self.width = width
-#         self.x = x
-#         self.y = y
-
-# class Ball:
-#     """ Encodes the state of the paddle in the game """
-#     def __init__(self,color,height,width,x,y):
-#         self.color = color
-#         self.height = height
-#         self.width = width
-#         self.x = x
-#         self.y = y
