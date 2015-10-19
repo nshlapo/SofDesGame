@@ -12,10 +12,10 @@ class GameView:
         #draw walls, stairs, doors, exits based on mapUnit's wall tuple
         for unit in self.model.mapUnits
             if unit.visible = True:
-                drawBorders(unit.borders[0])
-                drawBorders(unit.borders[1])
-                drawBorders(unit.borders[2])
-                drawBorders(unit.borders[3])
+                drawBorders(unit.walls[0])
+                drawBorders(unit.walls[1])
+                drawBorders(unit.walls[2])
+                drawBorders(unit.walls[3])
             #draw your player
             #draw enemy
             #draw keys
@@ -23,8 +23,8 @@ class GameView:
 
 def drawBorders(border):
     # function to decode our border tuple
-    if
-
+    pass
+    
 # class PyGameWindowView:
 #     """ A view of brick breaker rendered in a Pygame window """
 #     def __init__(self,model,screen):
