@@ -1,13 +1,9 @@
 import pygame
 from pygame.locals import *
 
-class PyGameMouseController:
+class GameController:
     def __init__(self,model):
         self.model = model
-
-    # def handle_mouse_event(self,event):
-    #     if event.type == MOUSEMOTION:
-    #         self.model.paddle.x = event.pos[0] - self.model.paddle.width/2.0
 
 
 # class PyGameKeyboardController:

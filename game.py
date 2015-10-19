@@ -13,8 +13,7 @@ from gamecontrol import *
 
 #     model = BrickBreakerModel()
 #     view = PyGameWindowView(model,screen)
-# #    controller = PyGameMouseController(model)
-#     controller = PyGameKeyboardController(model)
+#     controller = GameController(model)
 
 #     running = True
 

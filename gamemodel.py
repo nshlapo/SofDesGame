@@ -5,7 +5,8 @@ class GameModel:
     def __init__(self):
         self.floor = 0
         self.mapUnits = []
-
+            for x in
+        self.player =
 
 
 
@@ -24,10 +25,17 @@ class Enemy:
         self.visible = False
 
 class MapUnit:
-    def __init__(self, x, y, walls, key, trap, stair):
+    def __init__(self, x, y, borders, key, trap, stair):
+        """ Walls tuple has following structure:
+            (n, w, s, e)
+            0 = open
+            1 = wall
+            2 = door
+            3 = exit
+        """
         self.x = x
         self.y = y
-        self.walls = walls
+        self.borders = borders
         self.key = key
         self.trap = trap
         self.stair = stair
