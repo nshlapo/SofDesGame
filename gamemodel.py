@@ -10,7 +10,7 @@ class GameModel:
         self.mapUnits = {}
         for i in range(xsize):
             for j in range(ysize):
-                self.mapUnits[i+1,j+1]
+                self.mapUnits[i+1,j+1]=MapUnit(i+1,j+1,"")
 
         self.wall=[]
         self.nowall=[]
@@ -19,9 +19,7 @@ class GameModel:
             for j in range(ysize+1)
                 grid.append((i,j))
                 nowall.append((i,j))
-
         drawmaze()
-
         self.player = Player(1,1)
         self.enemy = Enemy(5,5)
     
@@ -131,7 +129,7 @@ class MapUnit:
         #self.borders = borders
         self.walls=[0,0,0,0]
         self.contains = contains
-        self.visible = False
+        self.visible = True
 
 # class BrickBreakerModel:
 #     """ Encodes the game state """
