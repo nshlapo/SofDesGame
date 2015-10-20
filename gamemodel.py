@@ -15,23 +15,23 @@ class GameModel:
         self.wall=[]
         self.nowall=[]
         self.grid=[]
-        for i in range(xsize+1)
-            for j in range(ysize+1)
-                grid.append((i,j))
-                nowall.append((i,j))
-        drawmaze()
+        for i in range(xsize+1):
+            for j in range(ysize+1):
+                self.grid.append((i,j))
+                self.nowall.append((i,j))
+        self.drawmaze()
         self.player = Player(1,1)
         self.enemy = Enemy(5,5)
 
     def drawmaze(self):
         #draw the outline walls
         for i in range(self.xsize):
-            drawwall((0,i),(0,i+1))
-            drawwall((self.ysize,i),(self.ysize,i+1))
+            self.drawwall((0,i),(0,i+1))
+            self.drawwall((self.ysize,i),(self.ysize,i+1))
 
         for j in range(self.ysize):
-            drawwall((j,0),(j+1,0))
-            drawwall((j,self.ysize),(j+1,self.ysize))
+            self.drawwall((j,0),(j+1,0))
+            self.drawwall((j,self.ysize),(j+1,self.ysize))
 
         #draws the maze
         while len(self.nowall)!=0:
@@ -133,6 +133,7 @@ class MapUnit:
 
 class DangerGauge:
     def __init__(self, x, y):
+        pass
 # class BrickBreakerModel:
 #     """ Encodes the game state """
 #     def __init__(self):
@@ -141,3 +142,4 @@ class DangerGauge:
 #             brick = Brick((0,255,0),20,100,x,120)
 #             self.bricks.append(brick)
 #         self.paddle = Paddle((255,255,255),20,100,200,450)
+        
