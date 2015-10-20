@@ -16,13 +16,12 @@ class GameView:
             if unit.visible == True:
                 self.drawBorders(unit)
 
-        xp=self.model.player.x
-        yp=self.model.player.y
+        xp=self.model.player.pos[0]
+        yp=self.model.player.pos[1]
         xp1=self.posmazestart[0]+0.5*self.gridwidth+(xp-1)*self.gridwidth
         yp1=self.posmazestart[1]+0.5*self.gridwidth+self.gridwidth*(yp-1)
         # pygame.draw.circle(self.screen,pygame.Color(0,255,0),(xp1,yp1),self.gridwidth)
         pygame.draw.circle(self.screen,pygame.Color(0,255,0),(int(xp1),int(yp1)),int(self.gridwidth*(3/8)),0)
-        pygame.draw.line(self.screen,pygame.Color(255,255,255),[1,1],[2,2])
         self.drawGauge(self.model.dangerGauge)
         pygame.display.update()
             #draw your player
@@ -36,8 +35,8 @@ class GameView:
         pygame.draw.rect(self.screen, pygame.Color(255,0,0), dangerGauge.fill, 0)
 
     def drawBorders(self,unit):
-        x=self.posmazestart[0]+0.5*self.gridwidth+(unit.x-1)*self.gridwidth
-        y=self.posmazestart[1]+0.5*self.gridwidth+self.gridwidth*(unit.y-1)
+        x=self.posmazestart[0]+0.5*self.gridwidth+(unit.pos[0]-1)*self.gridwidth
+        y=self.posmazestart[1]+0.5*self.gridwidth+self.gridwidth*(unit.pos[1]-1)
         nwcorner = [x-0.5*self.gridwidth,y-0.5*self.gridwidth]
         necorner = [x+0.5*self.gridwidth,y-0.5*self.gridwidth]
         swcorner = [x-0.5*self.gridwidth,y+0.5*self.gridwidth]

@@ -11,28 +11,7 @@ class GameModel:
         self.mapUnits = {}
         for i in range(xsize):
             for j in range(ysize):
-                self.mapUnits[i+1,j+1]=MapUnit(i+1,j+1,"")
-
-
-        # self.mapUnits[1,1].walls=[1,0,0,1]
-        # self.mapUnits[2,1].walls=[1,0,0,0]
-        # self.mapUnits[3,1].walls=[1,0,0,0]
-        # self.mapUnits[4,1].walls=[1,1,0,0]
-
-        # self.mapUnits[1,2].walls=[0,1,0,1]
-        # self.mapUnits[2,2].walls=[0,1,1,1]
-        # self.mapUnits[3,2].walls=[1,0,1,1]
-        # self.mapUnits[4,2].walls=[0,1,1,0]
-
-        # self.mapUnits[1,3].walls=[0,1,0,1]
-        # self.mapUnits[2,3].walls=[1,0,0,1]
-        # self.mapUnits[3,3].walls=[1,0,0,0]
-        # self.mapUnits[4,3].walls=[1,1,0,0]
-
-        # self.mapUnits[1,4].walls=[0,0,1,1]
-        # self.mapUnits[2,4].walls=[0,1,1,0]
-        # self.mapUnits[3,4].walls=[1,0,0,1]
-        # self.mapUnits[4,4].walls=[0,1,1,0]
+                self.mapUnits[i+1,j+1]=MapUnit((i+1,j+1),"")
         self.wall=[]
         self.nowall=[]
         self.grid=[]
@@ -41,56 +20,51 @@ class GameModel:
                 self.grid.append((i,j))
                 self.nowall.append((i,j))
         print self.nowall
-        self.drawmaze()
-        self.player = Player(1,1)
-        self.enemy = Enemy(5,5, self.player)
+        self.createmaze()
+        self.player = Player((1,1))
+        self.enemy = Enemy((5,5), self.player)
         self.dangerGauge = DangerGauge(self.player, self.enemy)
 
-    def drawmaze(self):
+    def createmaze(self):
         #draw the outline walls
         for i in range(self.xsize):
-            self.drawwall((0,i),(0,i+1))
-            self.drawwall((self.ysize,i),(self.ysize,i+1))
+            self.genwall((0,i),(0,i+1))
+            self.genwall((self.ysize,i),(self.ysize,i+1))
 
         for j in range(self.ysize):
-            self.drawwall((j,0),(j+1,0))
-            self.drawwall((j,self.ysize),(j+1,self.ysize))
+            self.genwall((j,0),(j+1,0))
+            self.genwall((j,self.ysize),(j+1,self.ysize))
 
         #draws the maze
         while len(self.nowall)!=0:
             indexnowall=randint(0,len(self.nowall)-1)
-            indexwall=randint(0,len(self.wall)-1)
             nowall_grid = self.nowall[indexnowall]
-            wall_grid =self.wall[indexwall]
             #from nowall to wall grid
             if self.adjacent(nowall_grid,self.wall)!=False:
                 adjwithwall=self.adjacent(nowall_grid,self.wall)
                 print "printing adjwithwall", adjwithwall
                 adjgrid = adjwithwall[randint(0,len(adjwithwall)-1)]
                 print adjgrid
-                self.drawwall(nowall_grid,adjgrid)
-
-            # #from wall to nowall grid
-            # if self.adjacent(wall_grid,self.nowall)!=False:
-            #     adjwithnowall=self.adjacent(wall_grid,self.nowall)
-            #     print "printing adjwithnowall", adjwithnowall
-            #     adjgrid = adjwithnowall[randint(0,len(adjwithnowall)-1)]
-            #     self.drawwall(nowall_grid,adjgrid)
+                self.genwall(nowall_grid,adjgrid)
 
         print "Random Maze Generated"
 
 
-    def drawwall(self,grid1,grid2):
+    def genwall(self,grid1,grid2):
         print "printing grids",grid1,grid2
         if grid1==grid2:
             print "They are identical grids"
         else:
+            #remove grids from nowall list and appending them to wall list
             if grid1 in self.nowall:
                 self.nowall.remove(grid1)
                 self.wall.append(grid1)
             if grid2 in self.nowall:
                 self.nowall.remove(grid2)
                 self.wall.append(grid2)
+
+            #Update the mapunit.wall to represent the wall
+            #boundaries
             if grid1[1]==0 and grid2[1]==0:
                 self.mapUnits[max([grid1[0],grid2[0]]),1].walls[0]=1
             elif grid1[1]==self.ysize and grid2[1]==self.ysize:
@@ -101,6 +75,8 @@ class GameModel:
             elif grid1[0]==self.xsize and grid2[0]==self.xsize:
                 self.mapUnits[self.xsize,max([grid1[1],grid2[1]])].walls[1]=1
 
+            #other random places
+            #checks whether the grids are horizontal or vertical to each other
             elif grid1[0]==grid2[0]:
                 self.mapUnits[grid1[0]+1,max([grid1[1],grid2[1]])].walls[3]=1
                 self.mapUnits[grid1[0],max([grid1[1],grid2[1]])].walls[1]=1
@@ -132,26 +108,33 @@ class GameModel:
 
 
 class Player:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+    #takes in position tuple pos. automatically creates trap and key attributes which refers to possession of the key or trap of the player
+    def __init__(self,pos):
+        self.pos=pos
         self.trap = False
         self.key = False
 
+    def updatepos(self,updatedpos,mapunit):
+        #function update the position of the person
+        self.pos=updatedpos
+        if mapunit.contains=="key":
+            self.key=True
+        if mapunit.contains=="trap":
+            self.trap=True
+
 
 class Enemy:
-    def __init__(self, x, y, player):
-        self.x = x
-        self.y = y
+    def __init__(self,pos,player):
+        self.pos=pos
         self.visible = False
         self.player = player
 
-    def update(self):
+    def updatepos(self,updatedpos):
         #function to move enemy one unit in direction of player
-        return ""
+        self.pos=updatedpos
 
 class MapUnit:
-    def __init__(self, x, y, contains):
+    def __init__(self, pos, contains):
         """ Walls list has following structure:
             [n, w, s, e]
             0 = open
@@ -159,8 +142,7 @@ class MapUnit:
             2 = door
             3 = exit
         """
-        self.x = x
-        self.y = y
+        self.pos=pos
         #self.borders = borders
         self.walls=[0,0,0,0]
         self.contains = contains
