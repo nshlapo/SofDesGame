@@ -1,3 +1,4 @@
+from __future__ import division
 import pygame
 from random import *
 from pygame.locals import *
@@ -15,23 +16,24 @@ class GameModel:
         self.wall=[]
         self.nowall=[]
         self.grid=[]
-        for i in range(xsize+1)
-            for j in range(ysize+1)
-                grid.append((i,j))
-                nowall.append((i,j))
-        drawmaze()
+        for i in range(xsize+1):
+            for j in range(ysize+1):
+                self.grid.append((i,j))
+                self.nowall.append((i,j))
+        self.drawmaze()
         self.player = Player(1,1)
         self.enemy = Enemy(5,5)
+        self.dangerGauge = DangerGauge()
 
     def drawmaze(self):
         #draw the outline walls
         for i in range(self.xsize):
-            drawwall((0,i),(0,i+1))
-            drawwall((self.ysize,i),(self.ysize,i+1))
+            self.drawwall((0,i),(0,i+1))
+            self.drawwall((self.ysize,i),(self.ysize,i+1))
 
         for j in range(self.ysize):
-            drawwall((j,0),(j+1,0))
-            drawwall((j,self.ysize),(j+1,self.ysize))
+            self.drawwall((j,0),(j+1,0))
+            self.drawwall((j,self.ysize),(j+1,self.ysize))
 
         #draws the maze
         while len(self.nowall)!=0:
@@ -40,16 +42,16 @@ class GameModel:
             nowall_grid = self.nowall[indexnowall]
             wall_grid =self.wall[indexwall]
             #from nowall to wall grid
-            if adjacent(nowall_grid,self.wall)!=False:
-                adjwithwall=adjacent(nowall_grid,self.wall)
+            if self.adjacent(nowall_grid,self.wall)!=False:
+                adjwithwall=self.adjacent(nowall_grid,self.wall)
                 adjgrid = adjwithwall[randint[0,len(adjwithwall)-1]]
-                drawwall(nowall_grid,adjgrid)
+                self.drawwall(nowall_grid,adjgrid)
 
             #from wall to nowall grid
-            if adjacent(wall_grid,self.nowall)!=False:
-                adjwithnowall=adjacent(wall_grid,self.nowall)
+            if self.adjacent(wall_grid,self.nowall)!=False:
+                adjwithnowall=self.adjacent(wall_grid,self.nowall)
                 adjgrid = adjwithwall[randint[0,len(adjwithwall)-1]]
-                drawwall(nowall_grid,adjgrid)
+                self.drawwall(nowall_grid,adjgrid)
 
         print "Random Maze Generated"
 
@@ -65,12 +67,12 @@ class GameModel:
             if grid1[0]==0 and grid2[0]==0:
                 self.mapUnits[1,max([grid1[1],grid2[1]])].walls[0]=1
             elif grid1[0]==self.xsize and grid2[0]==self.xsize:
-                self.mapUnits[xsize,max([grid1[1],grid2[1]])].walls[2]=1
+                self.mapUnits[self.xsize,max([grid1[1],grid2[1]])].walls[2]=1
 
             elif grid1[1]==0 and grid2[1]==0:
                 self.mapUnits[max([grid1[0],grid2[0]]),1].walls[3]=1
             elif grid1[1]==self.ysize and grid2[1]==self.ysize:
-                self.mapUnits[max([grid1[0],grid2[0]]),ysize].walls[2]=1
+                self.mapUnits[max([grid1[0],grid2[0]]),self.ysize].walls[2]=1
 
             elif grid1[0]==grid2[0]:
                 self.mapUnits[grid1[0],max([grid1[1],grid2[1]])].walls[3]=1
@@ -133,11 +135,6 @@ class MapUnit:
 
 class DangerGauge:
     def __init__(self, x, y):
-# class BrickBreakerModel:
-#     """ Encodes the game state """
-#     def __init__(self):
-#         self.bricks = []
-#         for x in range(20,620,150):
-#             brick = Brick((0,255,0),20,100,x,120)
-#             self.bricks.append(brick)
-#         self.paddle = Paddle((255,255,255),20,100,200,450)
+        self.distance = 4
+        self.border = pygame.Rect(10, 10, 40, 580)
+        self.fill = pygame.Rect(11, (10+(58*self.distance)/10, 38, (self.distance/10) - 1))

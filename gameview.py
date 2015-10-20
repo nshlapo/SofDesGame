@@ -1,8 +1,8 @@
+from __future__ import division
 import pygame
 from pygame.locals import *
 
 class GameView:
-
     def __init__(self, model,screen):
         self.model = model
         self.screen = screen
@@ -10,18 +10,18 @@ class GameView:
     def draw(self):
         self.screen.fill(pygame.Color(0,0,0))
         #draw walls, stairs, doors, exits based on mapUnit's wall tuple
-        for unit in self.model.mapUnits.values()
-            if unit.visible = True:
+        for unit in self.model.mapUnits:
+            if unit.visible is True:
                 drawBorders(unit)
             #draw your player
             #draw enemy
             #draw keys
             #draw traps
+        drawGauge(self.model.dangerGauge)
 
-def drawBorders(unit):
-    if unit.walls[i] = 0:
-
-    if unit.walls[i] = 1:
+def drawGauge(dangerGauge):
+    pygame.draw.rect(self.screen, pygame.Color(255,255,0), dangerGauge.border)
+    pygame.draw.rect(self.screen, pygame.Color(255,0,0), dangerGauge.fill)
 
 
 
