@@ -14,34 +14,34 @@ class GameModel:
                 self.mapUnits[i+1,j+1]=MapUnit(i+1,j+1,"")
 
 
-        self.mapUnits[1,1].walls=[1,0,0,1]
-        self.mapUnits[2,1].walls=[1,0,0,0]
-        self.mapUnits[3,1].walls=[1,0,0,0]
-        self.mapUnits[4,1].walls=[1,1,0,0]
+        # self.mapUnits[1,1].walls=[1,0,0,1]
+        # self.mapUnits[2,1].walls=[1,0,0,0]
+        # self.mapUnits[3,1].walls=[1,0,0,0]
+        # self.mapUnits[4,1].walls=[1,1,0,0]
 
-        self.mapUnits[1,2].walls=[0,1,0,1]
-        self.mapUnits[2,2].walls=[0,1,1,1]
-        self.mapUnits[3,2].walls=[1,0,1,1]
-        self.mapUnits[4,2].walls=[0,1,1,0]
+        # self.mapUnits[1,2].walls=[0,1,0,1]
+        # self.mapUnits[2,2].walls=[0,1,1,1]
+        # self.mapUnits[3,2].walls=[1,0,1,1]
+        # self.mapUnits[4,2].walls=[0,1,1,0]
 
-        self.mapUnits[1,3].walls=[0,1,0,1]
-        self.mapUnits[2,3].walls=[1,0,0,1]
-        self.mapUnits[3,3].walls=[1,0,0,0]
-        self.mapUnits[4,3].walls=[1,1,0,0]
+        # self.mapUnits[1,3].walls=[0,1,0,1]
+        # self.mapUnits[2,3].walls=[1,0,0,1]
+        # self.mapUnits[3,3].walls=[1,0,0,0]
+        # self.mapUnits[4,3].walls=[1,1,0,0]
 
-        self.mapUnits[1,4].walls=[0,0,1,1]
-        self.mapUnits[2,4].walls=[0,1,1,0]
-        self.mapUnits[3,4].walls=[1,0,0,1]
-        self.mapUnits[4,4].walls=[0,1,1,0]
-        # self.wall=[]
-        # self.nowall=[]
-        # self.grid=[]
-        # for i in range(xsize+1):
-        #     for j in range(ysize+1):
-        #         self.grid.append((i,j))
-        #         self.nowall.append((i,j))
-        # print self.nowall
-        # self.drawmaze()
+        # self.mapUnits[1,4].walls=[0,0,1,1]
+        # self.mapUnits[2,4].walls=[0,1,1,0]
+        # self.mapUnits[3,4].walls=[1,0,0,1]
+        # self.mapUnits[4,4].walls=[0,1,1,0]
+        self.wall=[]
+        self.nowall=[]
+        self.grid=[]
+        for i in range(xsize+1):
+            for j in range(ysize+1):
+                self.grid.append((i,j))
+                self.nowall.append((i,j))
+        print self.nowall
+        self.drawmaze()
         self.player = Player(1,1)
         self.enemy = Enemy(5,5, self.player)
         self.dangerGauge = DangerGauge(self.player, self.enemy)
@@ -64,20 +64,18 @@ class GameModel:
             wall_grid =self.wall[indexwall]
             #from nowall to wall grid
             if self.adjacent(nowall_grid,self.wall)!=False:
-                adjwithwall=[]
-                adjwithwall.append(self.adjacent(nowall_grid,self.wall))
+                adjwithwall=self.adjacent(nowall_grid,self.wall)
                 print "printing adjwithwall", adjwithwall
                 adjgrid = adjwithwall[randint(0,len(adjwithwall)-1)]
                 print adjgrid
                 self.drawwall(nowall_grid,adjgrid)
 
-            #from wall to nowall grid
-            if self.adjacent(wall_grid,self.nowall)!=False:
-                adjwithnowall=[]
-                adjwithnowall.append(self.adjacent(wall_grid,self.nowall))
-                print "printing adjwithnowall", adjwithnowall
-                adjgrid = adjwithnowall[randint(0,len(adjwithnowall)-1)]
-                self.drawwall(nowall_grid,adjgrid)
+            # #from wall to nowall grid
+            # if self.adjacent(wall_grid,self.nowall)!=False:
+            #     adjwithnowall=self.adjacent(wall_grid,self.nowall)
+            #     print "printing adjwithnowall", adjwithnowall
+            #     adjgrid = adjwithnowall[randint(0,len(adjwithnowall)-1)]
+            #     self.drawwall(nowall_grid,adjgrid)
 
         print "Random Maze Generated"
 
@@ -104,12 +102,12 @@ class GameModel:
                 self.mapUnits[self.xsize,max([grid1[1],grid2[1]])].walls[1]=1
 
             elif grid1[0]==grid2[0]:
-                self.mapUnits[grid1[0],max([grid1[1],grid2[1]])].walls[3]=1
-                self.mapUnits[grid1[0]+1,max([grid1[1],grid2[1]])].walls[1]=1
+                self.mapUnits[grid1[0]+1,max([grid1[1],grid2[1]])].walls[3]=1
+                self.mapUnits[grid1[0],max([grid1[1],grid2[1]])].walls[1]=1
 
             elif grid1[1]==grid2[1]:
                 self.mapUnits[max([grid1[0],grid2[0]]),grid1[1]].walls[2]=1
-                self.mapUnits[max([grid1[0],grid2[0]]),grid1[1]+1].walls[4]=1
+                self.mapUnits[max([grid1[0],grid2[0]]),grid1[1]+1].walls[0]=1
 
             else:
                 print "The grids are not adjacent"
@@ -119,12 +117,14 @@ class GameModel:
         x=grid[0]
         y=grid[1]
         adjacent = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)]
+        print "print adjacent", adjacent
         adjwithnowall=[]
         for item in adjacent:
             if item in list_wall:
                 adjwithnowall.append(item)
 
         if len(adjwithnowall)>0:
+            print "adjwithnowall", adjwithnowall
             return adjwithnowall
         else:
             return False
