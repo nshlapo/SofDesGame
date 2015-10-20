@@ -13,7 +13,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode(size)
     model = GameModel(10, 10)
     view = GameView(model,screen)
-    controller = GameController(model)
+    controller = GameKeyboardController(model)
 
     running = True
 
@@ -21,10 +21,10 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == QUIT:
                 running = False
-#            if event.type == MOUSEMOTION:
-#                controller.handle_mouse_event(event)
-            # if event.type == KEYDOWN:
-                # controller.handle_key_event(event)
+            if event.type == KEYDOWN:
+                controller.handle_key_event(event)
+                model.enemy.update()
+                model.dangerGauge.update()
         view.draw()
         time.sleep(0.01)
 
