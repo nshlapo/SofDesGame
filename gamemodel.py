@@ -138,3 +138,14 @@ class DangerGauge:
         self.distance = 4
         self.border = pygame.Rect(10, 10, 40, 580)
         self.fill = pygame.Rect(11, (10+(58*self.distance)/10, 38, (self.distance/10) - 1))
+
+# class BrickBreakerModel:
+#     """ Encodes the game state """
+#     def __init__(self):
+#         self.bricks = []
+#         for x in range(20,620,150):
+#             brick = Brick((0,255,0),20,100,x,120)
+#             self.bricks.append(brick)
+#         self.paddle = Paddle((255,255,255),20,100,200,450)
+
+

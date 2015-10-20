@@ -9,7 +9,7 @@ from gamecontrol import *
 if __name__ == '__main__':
     pygame.init()
 
-    size = (640,480)
+    size = (660,600)
     screen = pygame.display.set_mode(size)
 
     model = GameModel(10, 10)
