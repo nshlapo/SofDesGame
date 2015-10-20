@@ -7,8 +7,8 @@ class GameView:
     def __init__(self, model,screen):
         self.model = model
         self.screen = screen
-        self.gridwidth=120.0
-        self.posmazestart = [120.0,50.0]
+        self.gridwidth=60.0
+        self.posmazestart = [60.0,0]
     def draw(self):
         self.screen.fill(pygame.Color(0,0,0))
         #draw walls, stairs, doors, exits based on mapUnit's wall tuple
