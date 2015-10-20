@@ -22,6 +22,7 @@ class GameModel:
         print self.nowall
         self.createmaze()
         self.player = Player((1,1))
+        self.mapUnits[self.player.x, self.player.y].visible = True
         self.enemy = Enemy((5,5), self.player)
         self.dangerGauge = DangerGauge(self.player, self.enemy)
 
@@ -110,22 +111,35 @@ class GameModel:
 class Player:
     #takes in position tuple pos. automatically creates trap and key attributes which refers to possession of the key or trap of the player
     def __init__(self,pos):
-        self.pos=pos
+        self.x = pos[0]
+        self.y = pos[1]
         self.trap = False
         self.key = False
 
-    def updatepos(self,updatedpos,mapunit):
+    def updatepos(self, currUnit, direction):
         #function update the position of the person
-        self.pos=updatedpos
-        if mapunit.contains=="key":
-            self.key=True
-        if mapunit.contains=="trap":
-            self.trap=True
+        if direction is 0:
+            self.y -= 1
+            print "moved up"
+        elif direction is 1:
+            self.x += 1
+            print "moved right"
+        elif direction is 2:
+            self.y += 1
+            print "moved down"
+        elif direction is 3:
+            self.x -= 1
+            print "moved left"
 
+        if currUnit.contains=="key":
+                self.key=True
+        if currUnit.contains=="trap":
+                self.trap=True
 
 class Enemy:
     def __init__(self,pos,player):
-        self.pos=pos
+        self.x = pos[0]
+        self.y = pos[1]
         self.visible = False
         self.player = player
 
@@ -142,11 +156,11 @@ class MapUnit:
             2 = door
             3 = exit
         """
-        self.pos=pos
-        #self.borders = borders
+        self.x = pos[0]
+        self.y = pos[1]
         self.walls=[0,0,0,0]
         self.contains = contains
-        self.visible = True
+        self.visible = False
 
 class DangerGauge:
     def __init__(self, player, enemy):
