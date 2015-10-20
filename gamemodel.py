@@ -22,13 +22,13 @@ class GameModel:
         drawmaze()
         self.player = Player(1,1)
         self.enemy = Enemy(5,5)
-    
+
     def drawmaze(self):
         #draw the outline walls
         for i in range(self.xsize):
             drawwall((0,i),(0,i+1))
             drawwall((self.ysize,i),(self.ysize,i+1))
-            
+
         for j in range(self.ysize):
             drawwall((j,0),(j+1,0))
             drawwall((j,self.ysize),(j+1,self.ysize))
@@ -87,17 +87,17 @@ class GameModel:
     def adjacent(grid,list_wall):
         x=grid[0]
         y=grid[1]
-        adjacent = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)]   
+        adjacent = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)]
         adjwithnowall=[]
         for item in adjacent:
             if item in list_wall:
                 adjwithnowall.append(item)
-        
+
         if len(adjwithnowall)>0:
             return adjwithnowall
         else:
             return False
-    
+
 
 
 class Player:
@@ -131,6 +131,8 @@ class MapUnit:
         self.contains = contains
         self.visible = True
 
+class DangerGauge:
+    def __init__(self, x, y):
 # class BrickBreakerModel:
 #     """ Encodes the game state """
 #     def __init__(self):
