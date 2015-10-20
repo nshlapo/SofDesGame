@@ -9,9 +9,8 @@ from gamecontrol import *
 if __name__ == '__main__':
     pygame.init()
 
-    size = (660,600)
+    size = (670,610)
     screen = pygame.display.set_mode(size)
-
     model = GameModel(10, 10)
     view = GameView(model,screen)
     controller = GameController(model)
@@ -27,6 +26,6 @@ if __name__ == '__main__':
             # if event.type == KEYDOWN:
                 # controller.handle_key_event(event)
         view.draw()
-        time.sleep(.001)
+        time.sleep(0.01)
 
     pygame.quit()
