@@ -23,7 +23,7 @@ class GameModel:
         self.createmaze()
         self.player = Player((1,1))
         self.mapUnits[self.player.x, self.player.y].visible = True
-        self.enemy = Enemy((5,5), self.player)
+        self.enemy = Enemy((5,5), self.player, self.mapUnits)
         self.dangerGauge = DangerGauge(self.player, self.enemy)
 
     def createmaze(self):
@@ -137,15 +137,28 @@ class Player:
                 self.trap=True
 
 class Enemy:
-    def __init__(self,pos,player):
+    def __init__(self,pos,player, mapUnits):
         self.x = pos[0]
         self.y = pos[1]
         self.visible = False
         self.player = player
+        self.mapUnits = mapUnits
 
-    def updatepos(self,updatedpos):
-        #function to move enemy one unit in direction of player
-        self.pos=updatedpos
+    def updatepos(self):
+        # xp = self.player.x
+        # yp = self.player.y
+        currUnit = self.mapUnits[self.x,self.y]
+        go = [i for i, num in enumerate(currUnit.walls) if num is 0]
+        rand = randint(0, len(go)-1)
+        if go[rand] is 0:
+            self.y = self.y - 1
+        if go[rand] is 1:
+            self.x = self.x + 1
+        if go[rand] is 2:
+            self.y = self.y + 1
+        if go[rand] is 3:
+            self.x = self.x - 1
+        # a_star()
 
 class MapUnit:
     def __init__(self, pos, contains):
@@ -164,14 +177,15 @@ class MapUnit:
 
 class DangerGauge:
     def __init__(self, player, enemy):
-        self.distance = 9
-        self.border = pygame.Rect(10, 10, 40, 580)
-        self.fill = pygame.Rect(11, (10+(58*(10-self.distance))), 38, (58*(self.distance) - 1))
         self.player = player
         self.enemy = enemy
+        self.update()
+        self.border = pygame.Rect(10, 10, 40, 580)
 
     def update(self):
         dx = self.player.x - self.enemy.x
         dy = self.player.y - self.enemy.y
         self.distance = (dx**2 + dy**2)**.5
+        self.fill = pygame.Rect(11, (11+(58*(self.distance))), 38, (58*(10-self.distance) - 2))
+
 

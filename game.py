@@ -23,8 +23,8 @@ if __name__ == '__main__':
                 running = False
             if event.type == KEYDOWN:
                 controller.handle_key_event(event)
-                # model.enemy.update()
-                model.dangerGauge.update()
+                # model.enemy.updatepos()
+                # model.dangerGauge.update()
         view.draw()
         time.sleep(0.01)
 

@@ -26,5 +26,8 @@ class GameController:
         if currUnit.walls[direction] is 0:
             player.updatepos(currUnit, direction)
             mapUnits[player.x, player.y].visible = True
+            self.model.enemy.updatepos()
+            self.model.dangerGauge.update()
+
         else:
             print "Can't move there"
