@@ -21,6 +21,7 @@ class GameModel:
                 self.nowall.append((i,j))
         print self.nowall
         self.createmaze()
+        self.mapUnits[10, 10].walls[1] = 3
         self.player = Player((1,1))
         self.mapUnits[self.player.x, self.player.y].visible = True
         self.enemy = Enemy((5,5), self.player, self.mapUnits)
