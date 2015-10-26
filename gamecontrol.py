@@ -5,6 +5,8 @@ from pygame.locals import *
 class GameController:
     def __init__(self,model):
         self.model = model
+        self.won = False
+        self.lost = False
 
 
 # class GameKeyboardController:
@@ -28,6 +30,24 @@ class GameController:
             mapUnits[player.x, player.y].visible = True
             self.model.enemy.updatepos()
             self.model.dangerGauge.update()
+            print self.model.dangerGauge.distance
+            if self.model.dangerGauge.distance == 0:
+                    self.lost = True
+
+        if currUnit.walls[direction] is 2:
+            if player.key:
+                player.updatepos(currUnit, direction)
+                currUnit.walls[direction] = 0
+                mapUnits[player.x, player.y].visible = True
+                self.model.enemy.updatepos()
+                self.model.dangerGauge.update()
+                print self.model.dangerGauge.distance
+                if self.model.dangerGauge.distance == 0:
+                    self.lost = True
+
+        if currUnit.walls[direction] is 3:
+            self.won = True
+            print "You win"
 
         else:
             print "Can't move there"

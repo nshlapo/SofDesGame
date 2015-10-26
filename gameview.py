@@ -4,11 +4,12 @@ import time
 from pygame.locals import *
 
 class GameView:
-    def __init__(self, model,screen):
+    def __init__(self, model, screen):
         self.model = model
         self.screen = screen
         self.gridwidth=60.0
         self.posmazestart = [60.0,0]
+
     def draw(self):
         self.screen.fill(pygame.Color(0,0,0))
         #draw walls, stairs, doors, exits based on mapUnit's wall tuple
@@ -62,7 +63,7 @@ class GameView:
         necorner = [x+0.5*self.gridwidth,y-0.5*self.gridwidth]
         swcorner = [x-0.5*self.gridwidth,y+0.5*self.gridwidth]
         secorner = [x+0.5*self.gridwidth,y+0.5*self.gridwidth]
-        colors=[pygame.Color(255,255,255),pygame.Color(255,0,0),pygame.Color(0,255,0)]
+        colors=[pygame.Color(255,255,255),pygame.Color(255,0,0),pygame.Color(255,215,0)]
         if unit.walls[0] in [1,2,3]:
             pygame.draw.line(self.screen, colors[unit.walls[0]-1],nwcorner,necorner)
         if unit.walls[1] in [1,2,3]:
@@ -71,6 +72,29 @@ class GameView:
             pygame.draw.line(self.screen,colors[unit.walls[2]-1],swcorner,secorner)
         if unit.walls[3] in [1,2,3]:
             pygame.draw.line(self.screen,colors[unit.walls[3]-1],nwcorner,swcorner)
+
     def drawcontains(self,unit):
         (x,y)=self.convertpos((unit.x,unit.y))
         pygame.draw.circle(self.screen,pygame.Color(0,0,255),(int(x),int(y)),int(self.gridwidth*(1/8)),0)
+
+
+    def drawIntro(self):
+        self.screen.fill(pygame.Color(0,0,0))
+        font = pygame.font.SysFont('Calibri', 30, True, False)
+        text = font.render("Press p to start",True,(0, 0, 255))
+        self.screen.blit(text, [250, 250])
+        pygame.display.update()
+`
+    def drawWin(self):
+        self.screen.fill(pygame.Color(0,0,0))
+        font = pygame.font.SysFont('Calibri', 30, True, False)
+        text = font.render("YOU WON", True, (0, 255, 0))
+        self.screen.blit(text, [250, 250])
+        pygame.display.update()
+
+    def drawLost(self):
+        self.screen.fill(pygame.Color(0,0,0))
+        font = pygame.font.SysFont('Calibri', 30, True, False)
+        text = font.render("YOU LOST", True, (255, 0, 0))
+        self.screen.blit(text, [250, 250])
+        pygame.display.update()
