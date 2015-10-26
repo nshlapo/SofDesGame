@@ -15,13 +15,26 @@ class GameModel:
         self.wall=[]
         self.nowall=[]
         self.grid=[]
+        self.path=[]
         for i in range(xsize+1):
             for j in range(ysize+1):
                 self.grid.append((i,j))
                 self.nowall.append((i,j))
         print self.nowall
         self.createmaze()
-        self.player = Player((1,1))
+        self.player = Player((2,5))
+        #marks every mapunit with shortest number of steps to get to certain position starting from player
+        self.cangetto_numsteps(self.mapUnits[(self.player.x,self.player.y)],1,0)
+        exitunit=self.createexit()
+        #marks every mapunit with shortest number of steps to get to certain position starting from the exit
+        self.cangetto_numsteps(self.mapUnits[(exitunit.x,exitunit.y)],1,1)
+        #finds shortest path to exit and appends to self.path
+        self.findexit(self.mapUnits[(self.player.x,self.player.y)])
+        print "path", self.path
+        doorunit = self.createdoor()
+        beforedoor=self.beforedoor(doorunit)
+        keypos=self.createkey(beforedoor)
+        print "keypos",keypos
         self.mapUnits[self.player.x, self.player.y].visible = True
         self.enemy = Enemy((5,5), self.player, self.mapUnits)
         self.dangerGauge = DangerGauge(self.player, self.enemy)
@@ -43,7 +56,6 @@ class GameModel:
             #from nowall to wall grid
             if self.adjacent(nowall_grid,self.wall)!=False:
                 adjwithwall=self.adjacent(nowall_grid,self.wall)
-                print "printing adjwithwall", adjwithwall
                 adjgrid = adjwithwall[randint(0,len(adjwithwall)-1)]
                 print adjgrid
                 self.genwall(nowall_grid,adjgrid)
@@ -52,7 +64,6 @@ class GameModel:
 
 
     def genwall(self,grid1,grid2):
-        print "printing grids",grid1,grid2
         if grid1==grid2:
             print "They are identical grids"
         else:
@@ -85,7 +96,6 @@ class GameModel:
             elif grid1[1]==grid2[1]:
                 self.mapUnits[max([grid1[0],grid2[0]]),grid1[1]].walls[2]=1
                 self.mapUnits[max([grid1[0],grid2[0]]),grid1[1]+1].walls[0]=1
-
             else:
                 print "The grids are not adjacent"
 
@@ -94,17 +104,141 @@ class GameModel:
         x=grid[0]
         y=grid[1]
         adjacent = [(x-1,y),(x+1,y),(x,y-1),(x,y+1)]
-        print "print adjacent", adjacent
         adjwithnowall=[]
         for item in adjacent:
             if item in list_wall:
                 adjwithnowall.append(item)
 
         if len(adjwithnowall)>0:
-            print "adjwithnowall", adjwithnowall
             return adjwithnowall
         else:
             return False
+
+    #i=0 from player to exit i=1 from exit to player
+    def cangetto_numsteps(self,currUnit,step,i):
+        currUnit.numsteps[i]=step
+        cangetto=self.mapunitcangetto(currUnit,i)
+        if len(cangetto)!=0:
+            for pos in cangetto:
+                self.cangetto_numsteps(self.mapUnits[pos],step+1,i)
+
+
+    #prints adjacent units that player can get to. Takes the current position. i=0 going from player - exit, i=1 when going from exit-player
+    def mapunitcangetto(self,currUnit,i):
+        cangetto=[]
+        currentpos=(currUnit.x,currUnit.y)
+        if currUnit.walls[0]==0:
+            if self.mapUnits[currentpos[0],currentpos[1]-1].numsteps[i]==0:
+                cangetto.append((currentpos[0],currentpos[1]-1))
+
+        if currUnit.walls[1]==0:
+            if self.mapUnits[currentpos[0]+1,currentpos[1]].numsteps[i]==0:
+                cangetto.append((currentpos[0]+1,currentpos[1]))
+
+        if currUnit.walls[2]==0:
+            if self.mapUnits[currentpos[0],currentpos[1]+1].numsteps[i]==0:
+                cangetto.append((currentpos[0],currentpos[1]+1))
+
+        if currUnit.walls[3]==0:
+            if self.mapUnits[currentpos[0]-1,currentpos[1]].numsteps[i]==0:
+                cangetto.append((currentpos[0]-1,currentpos[1]))
+
+        return cangetto
+
+    #creates exit farthest away from the player along the boundary
+    def createexit(self):
+        largestmapunit=self.mapUnits[self.player.x,self.player.y]
+        for i in range(self.ysize):
+            if self.mapUnits[1,i+1].numsteps[0]>largestmapunit.numsteps[0]:
+                largestmapunit=self.mapUnits[1,i+1]
+
+            if self.mapUnits[self.xsize,i+1].numsteps[0]>largestmapunit.numsteps[0]:
+                largestmapunit=self.mapUnits[self.xsize,i+1]
+
+        for j in range(self.xsize):
+            if self.mapUnits[j+1,1].numsteps[0]>largestmapunit.numsteps[0]:
+                largestmapunit=self.mapUnits[j+1,1]
+            if self.mapUnits[j+1,self.xsize].numsteps[0]>largestmapunit.numsteps[0]:
+                largestmapunit=self.mapUnits[j+1,self.xsize]
+
+        if largestmapunit.x==1:
+            largestmapunit.walls[3]=3
+        elif largestmapunit.x==self.xsize:
+            largestmapunit.walls[1]=3
+        elif largestmapunit.y==1:
+            largestmapunit.walls[0]=3
+        elif largestmapunit.y==self.ysize:
+            largestmapunit.walls[2]=3
+
+        return largestmapunit
+
+
+    #takes an empty list path and returns the shortest path to the exit
+    def findexit(self,playerpos):
+        self.path.append((playerpos.x,playerpos.y))
+        print playerpos.numsteps[0],playerpos.numsteps[1]
+        num = playerpos.numsteps[0]+playerpos.numsteps[1]
+        cango = self.printcango(playerpos)
+        for pos in cango:
+            if self.mapUnits[pos].numsteps[0]+self.mapUnits[pos].numsteps[1]==num and pos not in self.path:
+                self.findexit(self.mapUnits[pos])
+        return
+
+    #prints list of possible places adjacent to current position
+    def printcango(self,currUnit):
+        cango=[]
+        go = [i for i, num in enumerate(currUnit.walls) if num is 0]
+        if 0 in go:
+            cango.append((currUnit.x,currUnit.y-1))
+        if 1 in go:
+            cango.append((currUnit.x+1,currUnit.y))
+        if 2 in go:
+            cango.append((currUnit.x,currUnit.y+1))
+        if 3 in go:
+            cango.append((currUnit.x-1,currUnit.y))
+        return cango
+
+    def createdoor(self):
+        cancreatedoor=[]
+        midway = len(self.path)//2
+        midpos = self.path[midway]
+        doorunit = self.mapUnits[midpos]
+        
+        if doorunit.walls[0]==0:
+            if (doorunit.x,doorunit.y-1) in self.path:
+                cancreatedoor.append(0)
+        if doorunit.walls[1]==0:
+            if (doorunit.x+1,doorunit.y) in self.path:
+                cancreatedoor.append(1)
+        if doorunit.walls[2]==0:
+            if (doorunit.x,doorunit.y-1) in self.path:
+                cancreatedoor.append(2)
+        if doorunit.walls[3]==0:
+            if (doorunit.x,doorunit.y-1) in self.path:
+                cancreatedoor.append(3)        
+        doorunit.walls[cancreatedoor[0]]=2
+        return doorunit
+
+    def beforedoor(self,doorunit):
+        beforedoor=[]
+        for i in range(self.xsize):
+            for j in range(self.ysize):
+                if self.mapUnits[i+1,j+1].numsteps[0]<doorunit.numsteps[0] and self.mapUnits[i+1,j+1].numsteps[1]>doorunit.numsteps[1]:
+                    beforedoor.append((i+1,j+1))
+
+        return beforedoor
+
+    def createkey(self,beforedoor):
+        keypos=(self.player.x,self.player.y)
+        for pos in beforedoor:
+            if self.mapUnits[pos].numsteps[0]>self.mapUnits[keypos].numsteps[0]:
+                keypos=pos
+
+        self.mapUnits[keypos].contains="key"
+        return pos
+
+
+
 
 
 
@@ -173,7 +307,8 @@ class MapUnit:
         self.y = pos[1]
         self.walls=[0,0,0,0]
         self.contains = contains
-        self.visible = False
+        self.visible = True
+        self.numsteps=[0,0]
 
 class DangerGauge:
     def __init__(self, player, enemy):
