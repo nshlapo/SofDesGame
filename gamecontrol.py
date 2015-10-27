@@ -50,6 +50,13 @@ class GameController:
                 print "You win"
 
             self.model.enemy.updatepos()
+            self.trapCheck(self.model.enemy, self.model.mapUnits)
             self.model.dangerGauge.update()
             if self.model.dangerGauge.distance == 0:
                 self.lost = True
+
+    def trapCheck(self, enemy, mapUnits):
+        ex = enemy.x
+        ey = enemy.y
+        if mapUnits[ex, ey].contains is "trap":
+            enemy.trapped = 2
