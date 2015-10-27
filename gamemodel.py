@@ -219,7 +219,6 @@ class GameModel:
                 if (doorunit.x,doorunit.y-1) in self.path:
                     cancreatedoor.append(3)
             i+=1
-        
         doorunit.walls[cancreatedoor[0]]=2
         return doorunit
 
@@ -251,7 +250,7 @@ class Player:
     def __init__(self,pos, mapUnits):
         self.x = pos[0]
         self.y = pos[1]
-        self.trap = False
+        self.trap = True
         self.key = False
         self.mapUnits = mapUnits
 
@@ -273,9 +272,9 @@ class Player:
         if currUnit.contains=="key":
                 self.key=True
                 currUnit.contains=""
-        if currUnit.contains=="trap":
-                self.trap=True
-                currUnit.contains=""
+        # if currUnit.contains=="trap":
+        #         self.trap=True
+        #         currUnit.contains=""
 
 class Enemy:
     def __init__(self,pos,player, mapUnits):
@@ -284,21 +283,23 @@ class Enemy:
         self.visible = False
         self.player = player
         self.mapUnits = mapUnits
+        self.trapped = 0
 
     def updatepos(self):
-        # xp = self.player.x
-        # yp = self.player.y
+        if self.trapped != 0:
+            self.trapped -= 1
+            return
         currUnit = self.mapUnits[self.x,self.y]
         go = [i for i, num in enumerate(currUnit.walls) if num is 0]
         rand = randint(0, len(go)-1)
         if go[rand] is 0:
-            self.y = self.y - 1
+            self.y -= 1
         if go[rand] is 1:
-            self.x = self.x + 1
+            self.x += 1
         if go[rand] is 2:
-            self.y = self.y + 1
+            self.y += 1
         if go[rand] is 3:
-            self.x = self.x - 1
+            self.x -= 1
         # a_star()
 
 class MapUnit:
@@ -314,7 +315,7 @@ class MapUnit:
         self.y = pos[1]
         self.walls=[0,0,0,0]
         self.contains = contains
-        self.visible = True
+        self.visible = False
         self.numsteps=[0,0]
 
 class DangerGauge:
