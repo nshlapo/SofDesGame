@@ -25,29 +25,31 @@ class GameController:
 
     def collision_check(self, mapUnits, player, direction):
         currUnit = mapUnits[(player.x, player.y)]
-        if currUnit.walls[direction] is 0:
-            player.updatepos(currUnit, direction)
-            mapUnits[player.x, player.y].visible = True
-            self.model.enemy.updatepos()
-            self.model.dangerGauge.update()
-            print self.model.dangerGauge.distance
-            if self.model.dangerGauge.distance == 0:
-                    self.lost = True
 
-        if currUnit.walls[direction] is 2:
-            if player.key:
-                player.updatepos(currUnit, direction)
-                currUnit.walls[direction] = 0
-                mapUnits[player.x, player.y].visible = True
-                self.model.enemy.updatepos()
-                self.model.dangerGauge.update()
-                print self.model.dangerGauge.distance
-                if self.model.dangerGauge.distance == 0:
-                    self.lost = True
-
-        if currUnit.walls[direction] is 3:
-            self.won = True
-            print "You win"
+        if currUnit.walls[direction] is 1:
+            print "Can't move there"
 
         else:
-            print "Can't move there"
+            if currUnit.walls[direction] is 0:
+                player.updatepos(currUnit, direction)
+                mapUnits[player.x, player.y].visible = True
+
+            if currUnit.walls[direction] is 2:
+                if player.key:
+                    currUnit.walls[direction] = 0
+                    player.updatepos(currUnit, direction)
+                    currUnit = mapUnits[(player.x, player.y)]
+                    currUnit.walls[(direction-2)%3] = 0
+                    mapUnits[player.x, player.y].visible = True
+                else:
+                    print "Door is locked"
+                    return
+
+            if currUnit.walls[direction] is 3:
+                self.won = True
+                print "You win"
+
+            self.model.enemy.updatepos()
+            self.model.dangerGauge.update()
+            if self.model.dangerGauge.distance == 0:
+                self.lost = True
