@@ -51,7 +51,7 @@ class GameController:
                 self.won = True
                 print "You win"
 
-            self.model.enemy.updatepos()
+            self.model.enemy.updatepos(self.model)
             self.trapCheck(self.model.enemy, self.model.mapUnits)
             self.model.dangerGauge.update()
             if self.model.dangerGauge.distance == 0:

@@ -39,6 +39,11 @@ class GameModel:
         self.enemy = Enemy((5,5), self.player, self.mapUnits)
         self.dangerGauge = DangerGauge(self.player, self.enemy)
 
+    def clearmapmarker(self):
+        for i in range(self.xsize):
+            for j in range(self.ysize):
+                self.mapUnits[(i+1),(j+1)].numsteps=[0,0]
+        
     def createmaze(self):
         #draw the outline walls
         for i in range(self.xsize):
@@ -244,7 +249,6 @@ class GameModel:
 
 
 
-
 class Player:
     #takes in position tuple pos. automatically creates trap and key attributes which refers to possession of the key or trap of the player
     def __init__(self,pos, mapUnits):
@@ -253,6 +257,7 @@ class Player:
         self.trap = True
         self.key = False
         self.mapUnits = mapUnits
+
 
     def updatepos(self, currUnit, direction):
         #function update the position of the person
@@ -285,22 +290,63 @@ class Enemy:
         self.mapUnits = mapUnits
         self.trapped = 0
 
-    def updatepos(self):
+    def updatepos(self,model):
+        model.clearmapmarker()
         if self.trapped != 0:
             self.trapped -= 1
             return
         currUnit = self.mapUnits[self.x,self.y]
-        go = [i for i, num in enumerate(currUnit.walls) if num is 0]
-        rand = randint(0, len(go)-1)
-        if go[rand] is 0:
+        # go = [i for i, num in enumerate(currUnit.walls) if num is 0]
+        # rand = randint(0, len(go)-1)
+        model.cangetto_numsteps(currUnit,1,0)
+        model.cangetto_numsteps(self.mapUnits[(self.player.x,self.player.y)],1,1)
+        go = self.chaseplayer(self.mapUnits)
+        print "go",go
+        if go is 0:
             self.y -= 1
-        if go[rand] is 1:
+        if go is 1:
             self.x += 1
-        if go[rand] is 2:
+        if go is 2:
             self.y += 1
-        if go[rand] is 3:
+        if go is 3:
             self.x -= 1
-        # a_star()
+
+
+
+    def chaseplayer(self,mapUnits):
+        currUnit=self.mapUnits[self.x,self.y]
+        cangetto=[]
+        i=0
+        for wall in currUnit.walls:
+            if wall ==0:
+                cangetto.append(i)
+            i+=1
+        print "cangetto",cangetto
+
+        initstep=sum(currUnit.numsteps)
+        print "initstep", initstep
+        for item in cangetto:
+            if item ==0:
+                if sum(self.mapUnits[self.x,self.y-1].numsteps)==initstep:
+                    return item
+            elif item ==1:
+                if sum(self.mapUnits[self.x+1,self.y].numsteps)==initstep:
+                    return item
+            elif item ==2:
+                if sum(self.mapUnits[self.x,self.y+1].numsteps)==initstep:
+                    return item
+            elif item ==3:
+                if sum(self.mapUnits[self.x-1,self.y].numsteps)==initstep:
+                    return item
+            else:
+                print "you are screwed"
+
+
+
+    
+    
+
+
 
 class MapUnit:
     def __init__(self, pos, contains):
@@ -315,7 +361,7 @@ class MapUnit:
         self.y = pos[1]
         self.walls=[0,0,0,0]
         self.contains = contains
-        self.visible = False
+        self.visible = True
         self.numsteps=[0,0]
 
 class DangerGauge:
