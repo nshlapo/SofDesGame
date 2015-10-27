@@ -22,6 +22,8 @@ class GameController:
             self.collision_check(self.model.mapUnits, self.model.player, 2)
         if event.key == pygame.K_LEFT:
             self.collision_check(self.model.mapUnits, self.model.player, 3)
+        if event.key == pygame.K_SPACE:
+            self.placeTrap(self.model.mapUnits, self.model.player)
 
     def collision_check(self, mapUnits, player, direction):
         currUnit = mapUnits[(player.x, player.y)]
@@ -60,3 +62,17 @@ class GameController:
         ey = enemy.y
         if mapUnits[ex, ey].contains is "trap":
             enemy.trapped = 2
+            mapUnits[ex, ey].contains = ""
+
+    def placeTrap(self, mapUnits, player):
+        if player.trap == True:
+            print player.trap
+            currUnit = mapUnits[player.x, player.y]
+            print currUnit.contains
+            currUnit.contains = "trap"
+            print currUnit.contains
+            player.trap = False
+            print player.trap
+            # print "Trap placed"
+        else:
+            print "You have no traps"

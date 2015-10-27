@@ -17,7 +17,9 @@ class GameView:
             if unit.visible == True:
                 self.drawBorders(unit)
             if unit.contains=="key":
-                self.drawcontains(unit)
+                self.drawkey(unit)
+            if unit.contains=="trap":
+                self.drawtrap(unit)
 
 
         (xp,yp)=self.convertpos((self.model.player.x,self.model.player.y))
@@ -37,7 +39,10 @@ class GameView:
         # draw the player
         pygame.draw.circle(self.screen,pygame.Color(0,255,0),(int(xp),int(yp)),int(self.gridwidth*(3/8)),0)
         # draw the enemy
-        pygame.draw.circle(self.screen,pygame.Color(255,0,0),(int(xen),int(yen)),int(self.gridwidth*(3/8)),0)
+        if self.model.enemy.trapped != 0:
+            pygame.draw.circle(self.screen,pygame.Color(215,0,215),(int(xen),int(yen)),int(self.gridwidth*(3/8)),0)
+        else:
+            pygame.draw.circle(self.screen,pygame.Color(255,0,0),(int(xen),int(yen)),int(self.gridwidth*(3/8)),0)
         # draw the danger gauge
         self.drawGauge(self.model.dangerGauge)
             #draw enemy
@@ -73,9 +78,13 @@ class GameView:
         if unit.walls[3] in [1,2,3]:
             pygame.draw.line(self.screen,colors[unit.walls[3]-1],nwcorner,swcorner)
 
-    def drawcontains(self,unit):
+    def drawkey(self,unit):
         (x,y)=self.convertpos((unit.x,unit.y))
         pygame.draw.circle(self.screen,pygame.Color(0,0,255),(int(x),int(y)),int(self.gridwidth*(1/8)),0)
+
+    def drawtrap(self,unit):
+        (x,y)=self.convertpos((unit.x,unit.y))
+        pygame.draw.circle(self.screen,pygame.Color(215,0,215),(int(x),int(y)),int(self.gridwidth*(1/8)),0)
 
 
     def drawIntro(self):
