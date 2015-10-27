@@ -200,22 +200,26 @@ class GameModel:
 
     def createdoor(self):
         cancreatedoor=[]
-        midway = len(self.path)//2
-        midpos = self.path[midway]
-        doorunit = self.mapUnits[midpos]
+        i = 0
+        while len(cancreatedoor)==0:
+            midway = len(self.path)//2+i
+            midpos = self.path[midway]
+            doorunit = self.mapUnits[midpos]
 
-        if doorunit.walls[0]==0:
-            if (doorunit.x,doorunit.y-1) in self.path:
-                cancreatedoor.append(0)
-        if doorunit.walls[1]==0:
-            if (doorunit.x+1,doorunit.y) in self.path:
-                cancreatedoor.append(1)
-        if doorunit.walls[2]==0:
-            if (doorunit.x,doorunit.y-1) in self.path:
-                cancreatedoor.append(2)
-        if doorunit.walls[3]==0:
-            if (doorunit.x,doorunit.y-1) in self.path:
-                cancreatedoor.append(3)
+            if doorunit.walls[0]==0:
+                if (doorunit.x,doorunit.y-1) in self.path:
+                    cancreatedoor.append(0)
+            if doorunit.walls[1]==0:
+                if (doorunit.x+1,doorunit.y) in self.path:
+                    cancreatedoor.append(1)
+            if doorunit.walls[2]==0:
+                if (doorunit.x,doorunit.y-1) in self.path:
+                    cancreatedoor.append(2)
+            if doorunit.walls[3]==0:
+                if (doorunit.x,doorunit.y-1) in self.path:
+                    cancreatedoor.append(3)
+            i+=0
+        
         doorunit.walls[cancreatedoor[0]]=2
         return doorunit
 
