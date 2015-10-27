@@ -84,7 +84,7 @@ class GameView:
         text = font.render("Press p to start",True,(0, 0, 255))
         self.screen.blit(text, [250, 250])
         pygame.display.update()
-`
+
     def drawWin(self):
         self.screen.fill(pygame.Color(0,0,0))
         font = pygame.font.SysFont('Calibri', 30, True, False)

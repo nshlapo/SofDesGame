@@ -22,7 +22,7 @@ class GameModel:
                 self.nowall.append((i,j))
         print self.nowall
         self.createmaze()
-        self.player = Player((2,5))
+        self.player = Player((2,5), self.mapUnits)
         #marks every mapunit with shortest number of steps to get to certain position starting from player
         self.cangetto_numsteps(self.mapUnits[(self.player.x,self.player.y)],1,0)
         exitunit=self.createexit()
@@ -203,7 +203,7 @@ class GameModel:
         midway = len(self.path)//2
         midpos = self.path[midway]
         doorunit = self.mapUnits[midpos]
-        
+
         if doorunit.walls[0]==0:
             if (doorunit.x,doorunit.y-1) in self.path:
                 cancreatedoor.append(0)
@@ -215,7 +215,7 @@ class GameModel:
                 cancreatedoor.append(2)
         if doorunit.walls[3]==0:
             if (doorunit.x,doorunit.y-1) in self.path:
-                cancreatedoor.append(3)        
+                cancreatedoor.append(3)
         doorunit.walls[cancreatedoor[0]]=2
         return doorunit
 
@@ -244,11 +244,12 @@ class GameModel:
 
 class Player:
     #takes in position tuple pos. automatically creates trap and key attributes which refers to possession of the key or trap of the player
-    def __init__(self,pos):
+    def __init__(self,pos, mapUnits):
         self.x = pos[0]
         self.y = pos[1]
         self.trap = False
         self.key = False
+        self.mapUnits = mapUnits
 
     def updatepos(self, currUnit, direction):
         #function update the position of the person
@@ -267,8 +268,10 @@ class Player:
 
         if currUnit.contains=="key":
                 self.key=True
+                currUnit.contains=""
         if currUnit.contains=="trap":
                 self.trap=True
+                currUnit.contains=""
 
 class Enemy:
     def __init__(self,pos,player, mapUnits):
