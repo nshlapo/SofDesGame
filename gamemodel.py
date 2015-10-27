@@ -218,7 +218,7 @@ class GameModel:
             if doorunit.walls[3]==0:
                 if (doorunit.x,doorunit.y-1) in self.path:
                     cancreatedoor.append(3)
-            i+=0
+            i+=1
         
         doorunit.walls[cancreatedoor[0]]=2
         return doorunit
