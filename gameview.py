@@ -13,13 +13,6 @@ class GameView:
     def draw(self):
         self.screen.fill(pygame.Color(0,0,0))
         #draw walls, stairs, doors, exits based on mapUnit's wall tuple
-        for pos,unit in self.model.mapUnits.iteritems():
-            if unit.visible == True:
-                self.drawBorders(unit)
-            if unit.contains=="key":
-                self.drawkey(unit)
-            if unit.contains=="trap":
-                self.drawtrap(unit)
 
 
         (xp,yp)=self.convertpos((self.model.player.x,self.model.player.y))
@@ -39,10 +32,20 @@ class GameView:
         # draw the player
         pygame.draw.circle(self.screen,pygame.Color(0,255,0),(int(xp),int(yp)),int(self.gridwidth*(3/8)),0)
         # draw the enemy
-        if self.model.enemy.trapped != 0:
-            pygame.draw.circle(self.screen,pygame.Color(215,0,215),(int(xen),int(yen)),int(self.gridwidth*(3/8)),0)
-        else:
-            pygame.draw.circle(self.screen,pygame.Color(255,0,0),(int(xen),int(yen)),int(self.gridwidth*(3/8)),0)
+        if self.model.enemy.visible:
+            if self.model.enemy.trapped != 0:
+                pygame.draw.circle(self.screen,pygame.Color(215,0,215),(int(xen),int(yen)),int(self.gridwidth*(3/8)),0)
+            else:
+                pygame.draw.circle(self.screen,pygame.Color(255,0,0),(int(xen),int(yen)),int(self.gridwidth*(3/8)),0)
+
+        # draw map and map elements
+        for pos,unit in self.model.mapUnits.iteritems():
+            if unit.visible == True:
+                self.drawBorders(unit)
+            if unit.contains=="key":
+                self.drawkey(unit)
+            if unit.contains=="trap":
+                self.drawtrap(unit)
         # draw the danger gauge
         self.drawGauge(self.model.dangerGauge)
             #draw enemy

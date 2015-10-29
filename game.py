@@ -38,7 +38,9 @@ if __name__ == '__main__':
             if event.type == QUIT:
                 playing = False
             if event.type == KEYDOWN:
-                controller.handle_key_event(event)
+                trap = controller.handle_key_event(event)
+                if trap:
+                    view.draw()
             if controller.won == True:
                 playing = False
                 winning = True

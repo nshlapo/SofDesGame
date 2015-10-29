@@ -8,11 +8,6 @@ class GameController:
         self.won = False
         self.lost = False
 
-
-# class GameKeyboardController:
-#     def __init__(self,model):
-#         self.model = model
-
     def handle_key_event(self, event):
         if event.key == pygame.K_UP:
             self.collision_check(self.model.mapUnits, self.model.player, 0)
@@ -24,10 +19,11 @@ class GameController:
             self.collision_check(self.model.mapUnits, self.model.player, 3)
         if event.key == pygame.K_SPACE:
             self.placeTrap(self.model.mapUnits, self.model.player)
+            return True
 
     def collision_check(self, mapUnits, player, direction):
-        currUnit = mapUnits[(player.x, player.y)]
 
+        currUnit = mapUnits[(player.x, player.y)]
         if currUnit.walls[direction] is 1:
             print "Can't move there"
 
@@ -43,6 +39,7 @@ class GameController:
                     currUnit = mapUnits[(player.x, player.y)]
                     currUnit.walls[(direction-2)%3] = 0
                     mapUnits[player.x, player.y].visible = True
+
                 else:
                     print "Door is locked"
                     return
@@ -54,7 +51,7 @@ class GameController:
             self.model.enemy.updatepos(self.model)
             self.trapCheck(self.model.enemy, self.model.mapUnits)
             self.model.dangerGauge.update()
-            if self.model.dangerGauge.distance == 0:
+            if self.model.dangerGauge.distance == 0 and not self.model.enemy.trapped:
                 self.lost = True
 
     def trapCheck(self, enemy, mapUnits):
@@ -66,13 +63,9 @@ class GameController:
 
     def placeTrap(self, mapUnits, player):
         if player.trap == True:
-            print player.trap
             currUnit = mapUnits[player.x, player.y]
-            print currUnit.contains
             currUnit.contains = "trap"
-            print currUnit.contains
             player.trap = False
-            print player.trap
             # print "Trap placed"
         else:
             print "You have no traps"

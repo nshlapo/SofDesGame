@@ -43,7 +43,7 @@ class GameModel:
         for i in range(self.xsize):
             for j in range(self.ysize):
                 self.mapUnits[(i+1),(j+1)].numsteps=[0,0]
-        
+
     def createmaze(self):
         #draw the outline walls
         for i in range(self.xsize):
@@ -285,7 +285,7 @@ class Enemy:
     def __init__(self,pos,player, mapUnits):
         self.x = pos[0]
         self.y = pos[1]
-        self.visible = False
+        self.visible = True
         self.player = player
         self.mapUnits = mapUnits
         self.trapped = 0
@@ -316,15 +316,13 @@ class Enemy:
     def chaseplayer(self,mapUnits):
         currUnit=self.mapUnits[self.x,self.y]
         cangetto=[]
-        i=0
-        for wall in currUnit.walls:
-            if wall ==0:
-                cangetto.append(i)
-            i+=1
-        print "cangetto",cangetto
+
+        for index, wall in enumerate(currUnit.walls):
+            if wall == 0:
+                cangetto.append(index)
 
         initstep=sum(currUnit.numsteps)
-        print "initstep", initstep
+
         for item in cangetto:
             if item ==0:
                 if sum(self.mapUnits[self.x,self.y-1].numsteps)==initstep:
@@ -343,8 +341,8 @@ class Enemy:
 
 
 
-    
-    
+
+
 
 
 
