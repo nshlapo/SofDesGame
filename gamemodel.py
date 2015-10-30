@@ -308,7 +308,7 @@ class Player:
     def __init__(self,pos, mapUnits):
         self.x = pos[0]
         self.y = pos[1]
-        self.trap = 2
+        self.trap = 3
         self.key = False
         self.mapUnits = mapUnits
 
@@ -342,7 +342,7 @@ class Enemy:
     def __init__(self,pos,player, mapUnits):
         self.x = pos[0]
         self.y = pos[1]
-        self.visible = True
+        self.visible = False
         self.player = player
         self.mapUnits = mapUnits
         self.trapped = 0
@@ -416,7 +416,7 @@ class MapUnit:
         self.y = pos[1]
         self.walls=[0,0,0,0]
         self.contains = contains
-        self.visible = True
+        self.visible = False
         self.numsteps=[0,0]
 
 class DangerGauge:

@@ -11,13 +11,16 @@ if __name__ == '__main__':
 
     size = (670,610)
     screen = pygame.display.set_mode(size)
-    pygame.display.set_caption("Labyrinth")
+    pygame.display.set_caption("Maze Wanderer")
     play = True
+
     while play:
+        # initialize MVC elements
         model = GameModel(10, 10)
         view = GameView(model,screen)
         controller = GameController(model)
 
+        # initialize game state bools
         intro  = True
         playing = False
         winning = False
@@ -27,6 +30,7 @@ if __name__ == '__main__':
             for event in pygame.event.get():
                 if event.type == QUIT:
                     intro = False
+
                 if event.type == KEYDOWN:
                     if event.key == pygame.K_p:
                         intro = False
@@ -39,13 +43,18 @@ if __name__ == '__main__':
             for event in pygame.event.get():
                 if event.type == QUIT:
                     playing = False
+
                 if event.type == KEYDOWN:
                     trap = controller.handle_key_event(event)
+
+                    # update trap if it was placed
                     if trap:
                         view.draw()
+
                 if controller.won == True:
                     playing = False
                     winning = True
+
                 if controller.lost == True:
                     playing = False
                     losing = True
@@ -66,6 +75,8 @@ if __name__ == '__main__':
                 if event.type == QUIT:
                     losing = False
                     play = False
+
+                # enable keypress to replay
                 if event.type == KEYDOWN:
                     if event.key == pygame.K_p:
                         losing = False
