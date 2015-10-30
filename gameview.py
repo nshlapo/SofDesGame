@@ -28,11 +28,6 @@ class GameView:
         # convert grid locations into pixel coordinates for player and enemy
         (xp,yp)=self.convertpos((self.model.player.x,self.model.player.y))
         (xen,yen)=self.convertpos((self.model.enemy.x,self.model.enemy.y))
-<<<<<<< HEAD
-
-=======
->>>>>>> 58cbc500f87ccd2ac7180098a812c53c6ba7f016
-
         # draw the player
         pygame.draw.circle(self.screen,pygame.Color(0,255,0),(int(xp),int(yp)),int(self.gridwidth*(3/8)),0)
 
