@@ -4,14 +4,28 @@ from random import *
 from pygame.locals import *
 
 class GameModel:
+    '''
+    Model part of the Maze game
+    Creates game model including random maze, randomly placed exit, door, and key
+    Takes in xsize, ysize which are integers indicating the size of the map. 
+    '''
     def __init__(self,xsize,ysize):
-        self.floor = 0
+        '''MapUnits are dictionary of instances of mapunit that has its position (x,y) tuple as the key
+        '''
         self.xsize=xsize
         self.ysize=ysize
         self.mapUnits = {}
         for i in range(xsize):
             for j in range(ysize):
                 self.mapUnits[i+1,j+1]=MapUnit((i+1,j+1),"")
+        '''random maze generator generates the maze through the following step:
+            First, create grid points that walls can get attached to.
+            Second, it creates wall on the boundaries.
+            Third, it then recursively attaches wall from a grid that has wall to a grid that has no wall attached.
+
+            self.wall is the list of grids that has wall attached to them,
+            self.nowall is the list of grids that has no wall attached.
+        '''        
         self.wall=[]
         self.nowall=[]
         self.grid=[]
@@ -23,27 +37,46 @@ class GameModel:
         print self.nowall
         self.createmaze()
         self.player = Player((2,5), self.mapUnits)
+        '''After making the maze, the exit is created at the boundary that is farthest away from the player.
+            self.cangetto_numsteps essentially marks every mapUnit with the number of steps away from the player.
+            Then, self.createexit creates an exit at boundary units that has the largest number of steps away.
+        '''
         #marks every mapunit with shortest number of steps to get to certain position starting from player
         self.cangetto_numsteps(self.mapUnits[(self.player.x,self.player.y)],1,0)
         exitunit=self.createexit()
+        '''self.cangetto_numsteps is called again this time marking how many steps away every mapunit is from the exit.
+            By adding the number of steps away from the player with the number of steps away from the exit, we can get the shortest path.
+            Basically following the mapUnits with smallest sum of the numsteps will lead you to the exit.
+            The shortest path is appended to self.path through function self.findexit.
+        '''
         #marks every mapunit with shortest number of steps to get to certain position starting from the exit
         self.cangetto_numsteps(self.mapUnits[(exitunit.x,exitunit.y)],1,1)
         #finds shortest path to exit and appends to self.path
         self.findexit(self.mapUnits[(self.player.x,self.player.y)])
         print "path", self.path
+        '''Door is created along the shortest path to the exit. This prevents the player from exiting without getting the key and going through the door.
+            beforedoor is list of mapUnits that can be reached by the player before going through the door.
+            self.createkey places the key on mapunit that is certain distance away from the player, and also is before door.
+        '''
         doorunit = self.createdoor()
         beforedoor=self.beforedoor(doorunit)
         keypos=self.createkey(beforedoor)
         print "keypos",keypos
+        '''Any mapunits that the player has been is marked visible.
+        '''
         self.mapUnits[self.player.x, self.player.y].visible = True
+        '''positioning enemy and initializing the dangerGauge which tells you how far the player is from the enemy'''
         self.enemy = Enemy((5,5), self.player, self.mapUnits)
         self.dangerGauge = DangerGauge(self.player, self.enemy)
 
+    #clears all numstep markers. The algorithm used to get the shortest path to the exit from player is used for enemy to chase the player. 
+    #Since it is using the same markers, it is necessary to clear the markers.
     def clearmapmarker(self):
         for i in range(self.xsize):
             for j in range(self.ysize):
                 self.mapUnits[(i+1),(j+1)].numsteps=[0,0]
 
+    #ramdom maze generator. marks where the walls should be on the mapunits.
     def createmaze(self):
         #draw the outline walls
         for i in range(self.xsize):
@@ -67,7 +100,8 @@ class GameModel:
 
         print "Random Maze Generated"
 
-
+    #generates walls between grid1 and grid2 by marking the mapunits that has the grids as the vertices.
+    #input = grid1, grid2 that are tuples like:(xpos,ypos)
     def genwall(self,grid1,grid2):
         if grid1==grid2:
             print "They are identical grids"
@@ -104,7 +138,9 @@ class GameModel:
             else:
                 print "The grids are not adjacent"
 
-    #prints adjacent grids with nowall or with wall
+    #prints adjacent grids with wall
+    #inputs grid point (xpos,ypos) tuple, and list of grids with wall.
+    #outputs list of grids with wall.
     def adjacent(self,grid,list_wall):
         x=grid[0]
         y=grid[1]
@@ -119,7 +155,9 @@ class GameModel:
         else:
             return False
 
-    #i=0 from player to exit i=1 from exit to player
+    
+    #recursive function that marks all the units with number of steps(explained in detail in gamemodel)
+    #input: current unit of the player or exit, i=0 to mark from player to exit, and i=1 to mark from exit to player
     def cangetto_numsteps(self,currUnit,step,i):
         currUnit.numsteps[i]=step
         cangetto=self.mapunitcangetto(currUnit,i)
@@ -128,7 +166,9 @@ class GameModel:
                 self.cangetto_numsteps(self.mapUnits[pos],step+1,i)
 
 
-    #prints adjacent units that player can get to. Takes the current position. i=0 going from player - exit, i=1 when going from exit-player
+    #prints adjacent units that player can get to. 
+    #input:Takes the current position. i=0 going from player - exit, i=1 when going from exit-player
+    #output:list of units you can get to from current position
     def mapunitcangetto(self,currUnit,i):
         cangetto=[]
         currentpos=(currUnit.x,currUnit.y)
@@ -177,8 +217,9 @@ class GameModel:
 
         return largestmapunit
 
-
-    #takes an empty list path and returns the shortest path to the exit
+    #finds the shortest path to the exit.
+    #input:position of the player
+    #returns the shortest path to the exit
     def findexit(self,playerpos):
         self.path.append((playerpos.x,playerpos.y))
         print playerpos.numsteps[0],playerpos.numsteps[1]
@@ -189,7 +230,10 @@ class GameModel:
                 self.findexit(self.mapUnits[pos])
         return
 
+
     #prints list of possible places adjacent to current position
+    #input: current unit
+    #output: units you can go that is around you.
     def printcango(self,currUnit):
         cango=[]
         go = [i for i, num in enumerate(currUnit.walls) if num is 0]
@@ -203,6 +247,8 @@ class GameModel:
             cango.append((currUnit.x-1,currUnit.y))
         return cango
 
+    #creates door in the essential place in between the player and the exit. 
+    #returns the unit that the door is placed.
     def createdoor(self):
         cancreatedoor=[]
         i = 0
@@ -227,6 +273,9 @@ class GameModel:
         doorunit.walls[cancreatedoor[0]]=2
         return doorunit
 
+    #takes the unit where the door is placed and returns every mapunit that player can get to without getting through the door.
+    #input: doorunit
+    #output: list of units before door.
     def beforedoor(self,doorunit):
         beforedoor=[]
         for i in range(self.xsize):
@@ -236,6 +285,9 @@ class GameModel:
 
         return beforedoor
 
+    #creates key farthest away from player in mapunit that player can reach without going through the door.
+    #input:takes the list of units before door,
+    #output:position of the key.
     def createkey(self,beforedoor):
         keypos=(self.player.x,self.player.y)
         for pos in beforedoor:
@@ -250,7 +302,9 @@ class GameModel:
 
 
 class Player:
-    #takes in position tuple pos. automatically creates trap and key attributes which refers to possession of the key or trap of the player
+    '''takes in position tuple pos. automatically creates trap and key attributes which refers to possession of the key or trap of the player
+        takes in the whole dictionary of mapUnits because it is necessary for the enemy to chase the player.
+    '''
     def __init__(self,pos, mapUnits):
         self.x = pos[0]
         self.y = pos[1]
@@ -258,7 +312,9 @@ class Player:
         self.key = False
         self.mapUnits = mapUnits
 
-
+    #function that updates the position of the player.
+    #input: position of the currently placed unit, and the direction input from the game user through gamecontrol
+    #gets the key if the unit that player is moving to has key.
     def updatepos(self, currUnit, direction):
         #function update the position of the person
         if direction is 0:
@@ -279,6 +335,10 @@ class Player:
                 currUnit.contains=""
 
 class Enemy:
+    '''takes the tuple pos, instance of the player class, and the whole dictionary of mapunits.
+        player and the dictionary of mapunits is necessary to make the enemy chase the player.
+        When the enemy gets trapped, self.trapped becomes 2, and enemy is paralyzed for 2 moves.
+    '''
     def __init__(self,pos,player, mapUnits):
         self.x = pos[0]
         self.y = pos[1]
@@ -287,6 +347,8 @@ class Enemy:
         self.mapUnits = mapUnits
         self.trapped = 0
 
+    #Updates the position of the model through the algorithm that finds the shortest path from the enemy to the player.
+    #takes the class model to utilize the methods that were defined within the model class that were used to find the shortest path to exit from player.
     def updatepos(self,model):
         model.clearmapmarker()
         if self.trapped != 0:
@@ -309,7 +371,8 @@ class Enemy:
             self.x -= 1
 
 
-
+    #looks at the mapunit around the enemy's position and follows the unit that has the lowest sum of the numstep marker.
+    #takes in the mapunits dictionary.
     def chaseplayer(self,mapUnits):
         currUnit=self.mapUnits[self.x,self.y]
         cangetto=[]
@@ -336,21 +399,18 @@ class Enemy:
             else:
                 print "you are screwed"
 
-
-
-
-
-
-
-
 class MapUnit:
     def __init__(self, pos, contains):
-        """ Walls list has following structure:
+        """ takes tuple pos (x,y) and string contains which refers to whether the mapunit has anything in it.
+            Walls list has following structure:
             [n, w, s, e]
             0 = open
             1 = wall
             2 = door
             3 = exit
+
+            numsteps are markers that are utilized for random maze generator as well as enemy's AI chasing down the player.
+            all mapunits are invisible at first and as the player travels along the maze, each of the mapunit the player's been to will be marked visible=true.
         """
         self.x = pos[0]
         self.y = pos[1]
@@ -361,11 +421,15 @@ class MapUnit:
 
 class DangerGauge:
     def __init__(self, player, enemy):
+        '''dangerGauge takes the player instance and the enemy instance and computes the distance
+           between the enemy and the player.
+        '''
         self.player = player
         self.enemy = enemy
         self.update()
         self.border = pygame.Rect(10, 10, 40, 580)
 
+    #updates the dangergauge. distance is computed using d^2=x^2+y^2.
     def update(self):
         dx = self.player.x - self.enemy.x
         dy = self.player.y - self.enemy.y

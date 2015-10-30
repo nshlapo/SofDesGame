@@ -17,16 +17,6 @@ class GameView:
 
         (xp,yp)=self.convertpos((self.model.player.x,self.model.player.y))
         (xen,yen)=self.convertpos((self.model.enemy.x,self.model.enemy.y))
-        # xp=self.model.player.x
-        # yp=self.model.player.y
-        # xp1=self.posmazestart[0]+0.5*self.gridwidth+(xp-1)*self.gridwidth
-        # yp1=self.posmazestart[1]+0.5*self.gridwidth+self.gridwidth*(yp-1)
-
-        # xen=self.model.enemy.x
-        # yen=self.model.enemy.y
-        # xen1=self.posmazestart[0]+0.5*self.gridwidth+(xen-1)*self.gridwidth
-        # yen1=self.posmazestart[1]+0.5*self.gridwidth+self.gridwidth*(yen-1)
-
 
 
         # draw the player
