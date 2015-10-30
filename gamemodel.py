@@ -254,7 +254,7 @@ class Player:
     def __init__(self,pos, mapUnits):
         self.x = pos[0]
         self.y = pos[1]
-        self.trap = True
+        self.trap = 2
         self.key = False
         self.mapUnits = mapUnits
 
@@ -277,9 +277,6 @@ class Player:
         if currUnit.contains=="key":
                 self.key=True
                 currUnit.contains=""
-        # if currUnit.contains=="trap":
-        #         self.trap=True
-        #         currUnit.contains=""
 
 class Enemy:
     def __init__(self,pos,player, mapUnits):

@@ -29,6 +29,7 @@ class GameController:
 
         else:
             if currUnit.walls[direction] is 0:
+                # self.model.enemy.updatepos(self.model)
                 player.updatepos(currUnit, direction)
                 mapUnits[player.x, player.y].visible = True
 
@@ -62,10 +63,10 @@ class GameController:
             mapUnits[ex, ey].contains = ""
 
     def placeTrap(self, mapUnits, player):
-        if player.trap == True:
+        if player.trap > 0:
             currUnit = mapUnits[player.x, player.y]
             currUnit.contains = "trap"
-            player.trap = False
+            player.trap -= 1
             # print "Trap placed"
         else:
             print "You have no traps"
