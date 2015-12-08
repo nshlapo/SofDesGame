@@ -12,6 +12,8 @@ class GameController:
             won: (bool) whether player has won the game
             lost: (bool) whether player has lost the game
         '''
+        # would think "won" and "lost" would be part of the model
+        # because they are the game state
         self.model = model
         self.won = False
         self.lost = False
@@ -40,6 +42,8 @@ class GameController:
             # return true so trap can be immediately drawn
             return True
 
+    # This is nit-picky but under a strict MVC setup, I'd expect these 
+    # methods to be part of the model, not the controller
     def collision_check(self, mapUnits, player, direction):
         ''' Method used to check whether player can move in input direction.
 

@@ -416,7 +416,7 @@ class MapUnit:
         self.y = pos[1]
         self.walls=[0,0,0,0]
         self.contains = contains
-        self.visible = True
+        self.visible = False
         self.numsteps=[0,0]
 
 class DangerGauge:

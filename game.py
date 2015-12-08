@@ -83,6 +83,7 @@ if __name__ == '__main__':
                 if event.type == KEYDOWN:
                     if event.key == pygame.K_p:
                         losing = False
+                # nice! I was just thinking while playing how this would be useful 
 
             view.drawLost()
             time.sleep(0.01)
