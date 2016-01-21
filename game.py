@@ -30,6 +30,7 @@ if __name__ == '__main__':
             for event in pygame.event.get():
                 if event.type == QUIT:
                     intro = False
+                    play =False
 
                 if event.type == KEYDOWN:
                     if event.key == pygame.K_p:
@@ -43,6 +44,7 @@ if __name__ == '__main__':
             for event in pygame.event.get():
                 if event.type == QUIT:
                     playing = False
+                    play=False
 
                 if event.type == KEYDOWN:
                     trap = controller.handle_key_event(event)
@@ -66,6 +68,7 @@ if __name__ == '__main__':
             for event in pygame.event.get():
                 if event.type == QUIT:
                     winning = False
+                    play=False
 
             view.drawWin()
             time.sleep(0.01)
