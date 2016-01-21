@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     while play:
         # initialize MVC elements
-        model = GameModel(10, 10)
+        model = GameModel(5, 5)
         view = GameView(model,screen)
         controller = GameController(model)
 
